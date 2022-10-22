@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum OAuthProviderType {
+public enum AuthorityType {
 
-  GOOGLE("GOOGLE");
+  USER("ROLE_USER"),
+  ADMIN("ROLE_ADMIN");
 
   private final String value;
 
