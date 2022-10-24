@@ -1,7 +1,7 @@
 package com.catchup.domain.entity;
 
 import com.catchup.domain.code.AuthorityType;
-import com.catchup.domain.code.OAuthProviderType;
+import com.catchup.domain.code.OauthProviderType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -24,12 +24,12 @@ public class User extends BaseTime{
 
   private String nickName;
 
-  @Column(name = "o_auth_id", nullable = false, unique = true)
-  private String oAuthId;
+  @Column(name = "oauth_id", nullable = false, unique = true)
+  private String oauthId;
 
-  @Column(name = "o_auth_provider_type", nullable = false)
+  @Column(name = "oauth_provider_type", nullable = false)
   @Enumerated(EnumType.STRING)
-  private OAuthProviderType oAuthProviderType;
+  private OauthProviderType oauthProviderType;
 
   @Column(name = "authority_type", nullable = false)
   @Enumerated(EnumType.STRING)
