@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+# jpa mysql
+spring:
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show-sql: true
+  datasource:
+    url: jdbc:mysql://${{ secrets.DATABASE_URL }}/catch_up?serverTimezone=UTC
+    username: ${{ secrets.DATABASE_USERNAME }}
+    password: ${{ secrets.DATABASE_PASSWORD }}
+
+# HS512 알고리즘 사용 -> 512bit 이상의 secret key 필요
+# Secret 값은 특정 문자열을 Base64 로 인코딩한 값 사용 (아래 터미널 명령어 사용)
+# echo -n 'string-value' | openssl base64
+jwt:
+  header: ${{ secrets.JWT_HEADER }}
+  secret: ${{ secrets.JWT_SECRET }}
+  access-token-expire-time: 1800000     # 30 min
+  refresh-token-expire-time: 604800000  # 7 day
