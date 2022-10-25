@@ -15,13 +15,14 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-public class User extends BaseTime{
+public class User extends BaseTime {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "user_id")
   private Long id;
 
+  @Column(name = "nick_name", nullable = false, unique = true)
   private String nickName;
 
   @Column(name = "oauth_id", nullable = false, unique = true)
