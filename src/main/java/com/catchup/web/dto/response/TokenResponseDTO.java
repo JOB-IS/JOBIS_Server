@@ -1,14 +1,13 @@
 package com.catchup.web.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Builder
+@AllArgsConstructor
 public class TokenResponseDTO {
-  private String grantType;
+
   private String accessToken;
   private String refreshToken;
+
 }
