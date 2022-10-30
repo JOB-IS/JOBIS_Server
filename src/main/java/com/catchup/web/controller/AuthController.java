@@ -6,6 +6,7 @@ import com.catchup.web.service.AuthService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +20,9 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public TokenResponseDTO login(@Valid @RequestBody LoginRequestDTO dto) {
-    return authService.login(dto);
+  public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
+    TokenResponseDTO responseDTO = authService.login(dto);
+    return ResponseEntity.ok(responseDTO);
   }
 
 }
