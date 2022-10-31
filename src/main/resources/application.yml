@@ -14,9 +14,12 @@ spring:
         format_sql: true
         show-sql: true
   datasource:
-    url: jdbc:mysql://${{ secrets.DATABASE_URL }}/catch_up?serverTimezone=UTC
+    url: jdbc:mysql://${{ secrets.DATABASE_URL }}?serverTimezone=UTC
     username: ${{ secrets.DATABASE_USERNAME }}
     password: ${{ secrets.DATABASE_PASSWORD }}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher # https://www.inflearn.com/questions/230160
 
 # HS512 알고리즘 사용 -> 512bit 이상의 secret key 필요
 # Secret 값은 특정 문자열을 Base64 로 인코딩한 값 사용 (아래 터미널 명령어 사용)
