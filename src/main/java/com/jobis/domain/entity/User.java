@@ -27,7 +27,7 @@ public class User extends BaseTime {
   @Column(name = "user_id")
   private Long id;
 
-  @Column(name = "nick_name", nullable = false, unique = true)
+  @Column(name = "nick_name", unique = true)
   private String nickName;
 
   @Column(name = "oauth_id", nullable = false, unique = true)
@@ -36,5 +36,8 @@ public class User extends BaseTime {
   @Column(name = "oauth_provider_type", nullable = false)
   @Enumerated(EnumType.STRING)
   private OauthProviderType oauthProviderType;
+
+  @Column(name = "activated", nullable = false)
+  private boolean activated;
 
 }
