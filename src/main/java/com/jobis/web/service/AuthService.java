@@ -24,9 +24,7 @@ public class AuthService {
   private final TokenProvider tokenProvider;
   private final PasswordEncoder passwordEncoder;
 
-  // TODO - Refactoring
-  //  https://oingdaddy.tistory.com/206
-  //  https://onejunu.tistory.com/137
+  // TODO - DELETE
   @Transactional
   public TokenResponseDTO login(LoginRequestDTO dto) {
     // 가입 여부 확인
@@ -38,12 +36,14 @@ public class AuthService {
       user.setNickName(dto.getNickName());
       user.setOauthId(dto.getOauthId());
       user.setOauthProviderType(dto.getOauthProviderType());
+      user.setActivated(true);
       userRepository.save(user);
     }
 
+    // TODO 추후 {이메일, oauthId}로 변경?
     // 로그인
     Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(dto.getNickName(), passwordEncoder.encode(dto.getOauthId())));
+        .authenticate(new UsernamePasswordAuthenticationToken(dto.getOauthId(), passwordEncoder.encode(dto.getOauthId())));
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     // 토큰 생성

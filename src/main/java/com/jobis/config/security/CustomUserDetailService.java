@@ -14,8 +14,8 @@ public class CustomUserDetailService implements UserDetailsService {
   private final UserRepository userRepository;
 
   @Override
-  public UserDetails loadUserByUsername(String nickName) throws UsernameNotFoundException {
-    return userRepository.findByNickName(nickName)
+  public UserDetails loadUserByUsername(String oauthId) throws UsernameNotFoundException {
+    return userRepository.findByOauthIdAndActivated(oauthId, true)
         .map(LoginUser::new)
         .orElseThrow(() -> new UsernameNotFoundException("user not found"));
   }
