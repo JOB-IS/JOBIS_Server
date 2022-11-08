@@ -1,5 +1,6 @@
 package com.jobis.web.controller;
 
+import com.jobis.web.dto.request.GoogleLoginRequestDTO;
 import com.jobis.web.dto.request.LoginRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.service.AuthService;
@@ -24,5 +25,14 @@ public class AuthController {
     TokenResponseDTO responseDTO = authService.login(dto);
     return ResponseEntity.ok(responseDTO);
   }
+
+  @PostMapping(value = "/google/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<TokenResponseDTO> loginWithGoogle(
+      @Valid @RequestBody GoogleLoginRequestDTO dto) {
+    TokenResponseDTO responseDTO = authService.loginWithGoogle(dto);
+    return ResponseEntity.ok(responseDTO);
+  }
+
+//  TODO NickName 입력받는 API 생성
 
 }
