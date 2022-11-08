@@ -36,7 +36,6 @@ public class AuthService {
       user.setNickName(dto.getNickName());
       user.setOauthId(dto.getOauthId());
       user.setOauthProviderType(dto.getOauthProviderType());
-      user.setActivated(true);
       userRepository.save(user);
     }
 
