@@ -50,8 +50,9 @@ public class TokenProvider {
 
     Date now = new Date();
     String accessToken = Jwts.builder()
-        .claim("id", loginUser.getId())  // 토큰 발행 유저 정보
+        .claim("email", loginUser.getEmail())  // 토큰 발행 유저 정보
         .claim("oauthId", loginUser.getOauthId())
+        .claim("userId", loginUser.getUserId())
         .claim("nickName", loginUser.getNickName())
         .claim(AUTHORITIES_KEY, authorities)
         .setIssuedAt(now) // 토큰 발행 시간
@@ -81,8 +82,9 @@ public class TokenProvider {
 
   private com.jobis.domain.entity.User getUser(Claims claims) {
     return com.jobis.domain.entity.User.builder()
-        .id(claims.get("id", Long.class))
+        .email(claims.get("email", String.class))
         .oauthId(claims.get("oauthId", String.class))
+        .id(claims.get("userId", Long.class))
         .nickName(claims.get("nickName", String.class))
         .oauthProviderType(null)
         .build();
