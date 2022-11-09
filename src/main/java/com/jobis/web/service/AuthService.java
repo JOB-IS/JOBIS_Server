@@ -7,8 +7,7 @@ import com.jobis.domain.entity.User;
 import com.jobis.domain.repository.UserRepository;
 import com.jobis.exception.AuthenticationException;
 import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
-import com.jobis.web.dto.request.GoogleLoginRequestDTO;
-import com.jobis.web.dto.request.LoginRequestDTO;
+import com.jobis.web.dto.request.OauthLoginRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
 import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
@@ -31,33 +30,8 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final OauthHelper oauthHelper;
 
-  // TODO - DELETE
   @Transactional
-  public TokenResponseDTO login(LoginRequestDTO dto) {
-    // 가입 여부 확인
-    User user = userRepository.findByOauthId(dto.getOauthId()).orElse(null);
-
-    // 신규 가입
-    if (user == null) {
-      user = new User();
-      user.setNickName(dto.getNickName());
-      user.setOauthId(dto.getOauthId());
-      user.setOauthProviderType(dto.getOauthProviderType());
-      userRepository.save(user);
-    }
-
-    // 로그인
-    Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(dto.getOauthId(), passwordEncoder.encode(dto.getOauthId())));
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    // 토큰 생성
-    return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
-  }
-
-
-  @Transactional
-  public TokenResponseDTO loginWithGoogle(GoogleLoginRequestDTO dto) {
+  public TokenResponseDTO oauthLogin(OauthLoginRequestDTO dto) {
 
     // user 정보 요청
     GoogleUserInfoVO vo = null;

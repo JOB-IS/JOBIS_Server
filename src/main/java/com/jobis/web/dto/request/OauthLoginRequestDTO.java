@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class LoginRequestDTO {
+public class OauthLoginRequestDTO {
+
   @NotEmpty
-  private String oauthId;
-  @NotEmpty
-  private String nickName;
+  private String accessToken;
   @NotNull
   private OauthProviderType oauthProviderType;
+
 }

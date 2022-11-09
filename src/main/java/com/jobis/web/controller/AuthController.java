@@ -1,7 +1,6 @@
 package com.jobis.web.controller;
 
-import com.jobis.web.dto.request.GoogleLoginRequestDTO;
-import com.jobis.web.dto.request.LoginRequestDTO;
+import com.jobis.web.dto.request.OauthLoginRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.service.AuthService;
 import javax.validation.Valid;
@@ -21,15 +20,9 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
-    TokenResponseDTO responseDTO = authService.login(dto);
-    return ResponseEntity.ok(responseDTO);
-  }
-
-  @PostMapping(value = "/google/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<TokenResponseDTO> loginWithGoogle(
-      @Valid @RequestBody GoogleLoginRequestDTO dto) {
-    TokenResponseDTO responseDTO = authService.loginWithGoogle(dto);
+  public ResponseEntity<TokenResponseDTO> oauthLogin(
+      @Valid @RequestBody OauthLoginRequestDTO dto) {
+    TokenResponseDTO responseDTO = authService.oauthLogin(dto);
     return ResponseEntity.ok(responseDTO);
   }
 
