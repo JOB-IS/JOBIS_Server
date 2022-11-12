@@ -1,5 +1,6 @@
 package com.jobis.web.dto.response;
 
+import com.jobis.domain.code.AuthType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,5 +10,6 @@ public class TokenResponseDTO {
 
   private String accessToken;
   private String refreshToken;
+  private AuthType authType;
 
 }
