@@ -4,6 +4,7 @@ import com.jobis.config.security.JwtAccessDeniedHandler;
 import com.jobis.config.security.JwtAuthenticationEntryPoint;
 import com.jobis.config.security.JwtFilter;
 import com.jobis.config.security.TokenProvider;
+import com.jobis.domain.code.AuthType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .authorizeRequests()
           .antMatchers("/api/v1/auth/**").permitAll()
+          .antMatchers("/api/v1/hello/real-user").hasRole(AuthType.ROLE_USER.getValueWithoutPrefix())
+          .antMatchers("/api/v1/hello/only-pre-user").hasRole(AuthType.ROLE_PRE_USER.getValueWithoutPrefix())
           .antMatchers("/api/**").authenticated()
           .anyRequest().denyAll();
   }
