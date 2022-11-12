@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AuthType {
 
-  ROLE_USER("ROLE_USER"),
-  ROLE_PRE_USER("ROLE_PRE_USER");  // 추가 정보 입력 필요 (가입 진행중)
+  ROLE_USER("ROLE_USER", "USER"),
+  ROLE_PRE_USER("ROLE_PRE_USER", "PRE_USER");  // 추가 정보 입력 필요 (가입 진행중)
 
   private final String value;
+  private final String valueWithoutPrefix;
 
 }
