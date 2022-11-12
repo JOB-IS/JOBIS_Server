@@ -1,5 +1,6 @@
 package com.jobis.config.security;
 
+import com.jobis.domain.code.AuthType;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -50,9 +51,10 @@ public class TokenProvider {
 
     Date now = new Date();
     String accessToken = Jwts.builder()
-        .claim("id", loginUser.getId())  // 토큰 발행 유저 정보
-        .claim("nickName", loginUser.getNickName())
+        .claim("email", loginUser.getEmail())  // 토큰 발행 유저 정보
         .claim("oauthId", loginUser.getOauthId())
+        .claim("userId", loginUser.getUserId())
+        .claim("nickName", loginUser.getNickName())
         .claim(AUTHORITIES_KEY, authorities)
         .setIssuedAt(now) // 토큰 발행 시간
         .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME)) // 토큰 만료시간
@@ -64,9 +66,7 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS512) // 키와 알고리즘 설정
         .compact();
 
-    // TODO refreshToken 저장
-
-    return new TokenResponseDTO(accessToken, refreshToken);
+    return new TokenResponseDTO(accessToken, refreshToken, loginUser.getAuthType());
   }
 
   public Authentication getAuthentication(String accessToken) {
@@ -83,9 +83,11 @@ public class TokenProvider {
 
   private com.jobis.domain.entity.User getUser(Claims claims) {
     return com.jobis.domain.entity.User.builder()
-        .id(claims.get("id", Long.class))
-        .nickName(claims.get("nickName", String.class))
+        .email(claims.get("email", String.class))
         .oauthId(claims.get("oauthId", String.class))
+        .id(claims.get("userId", Long.class))
+        .nickName(claims.get("nickName", String.class))
+        .authType(AuthType.valueOf(claims.get("auth", String.class)))
         .oauthProviderType(null)
         .build();
   }

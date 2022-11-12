@@ -7,6 +7,9 @@ import com.jobis.domain.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByOauthId(String oAuthId);
-  Optional<User> findByNickName(String nickName);
+
+  Optional<User> findByEmail(String email);
+
+  boolean existsByNickName(String nickName);
 
 }

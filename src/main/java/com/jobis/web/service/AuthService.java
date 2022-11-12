@@ -2,10 +2,20 @@ package com.jobis.web.service;
 
 import com.jobis.config.security.LoginUser;
 import com.jobis.config.security.TokenProvider;
+import com.jobis.domain.code.AuthType;
+import com.jobis.domain.code.OauthProviderType;
 import com.jobis.domain.entity.User;
 import com.jobis.domain.repository.UserRepository;
-import com.jobis.web.dto.request.LoginRequestDTO;
+import com.jobis.exception.AuthenticationException;
+import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
+import com.jobis.exception.ResourceNotFoundException;
+import com.jobis.exception.ResourceNotFoundException.ResourceNotFoundExceptionCode;
+import com.jobis.web.dto.request.AddAdditionalInfoRequestDTO;
+import com.jobis.web.dto.request.OauthLoginRequestDTO;
+import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
+import com.jobis.web.helper.oauth.OauthHelper;
+import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,31 +33,82 @@ public class AuthService {
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
   private final PasswordEncoder passwordEncoder;
+  private final OauthHelper oauthHelper;
 
-  // TODO - Refactoring
-  //  https://oingdaddy.tistory.com/206
-  //  https://onejunu.tistory.com/137
   @Transactional
-  public TokenResponseDTO login(LoginRequestDTO dto) {
-    // 가입 여부 확인
-    User user = userRepository.findByOauthId(dto.getOauthId()).orElse(null);
+  public TokenResponseDTO oauthLogin(OauthLoginRequestDTO dto) {
 
-    // 신규 가입
+    // user 정보 요청
+    GoogleUserInfoVO vo = null;
+    if (OauthProviderType.GOOGLE.equals(dto.getOauthProviderType())) {
+      vo = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
+    }
+
+    if (vo == null) {
+      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
+    }
+
+    // 가입 여부 확인
+    User user = userRepository.findByOauthId(vo.getId()).orElse(null);
+
+    // PRE_USER 신규 등록
     if (user == null) {
       user = new User();
-      user.setNickName(dto.getNickName());
-      user.setOauthId(dto.getOauthId());
-      user.setOauthProviderType(dto.getOauthProviderType());
+      user.setEmail(vo.getEmail());
+      user.setOauthId(vo.getId());
+      user.setOauthProviderType(OauthProviderType.GOOGLE);
+      user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
     }
 
-    // 로그인
+    // 로그인 처리
     Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(dto.getNickName(), passwordEncoder.encode(dto.getOauthId())));
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+            passwordEncoder.encode(user.getOauthId())));
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // 토큰 생성
     return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
   }
 
+  @Transactional
+  public TokenResponseDTO addAdditionalInfo(AddAdditionalInfoRequestDTO dto, long userId) {
+    User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(
+        ResourceNotFoundExceptionCode.USER_NOT_FOUND));
+
+    // nickName 중복 검사
+    if (userRepository.existsByNickName(dto.getNickName())) {
+      throw new AuthenticationException(AuthenticationExceptionCode.DUPLICATE_NICKNAME);
+    }
+
+    // USER 변경
+    user.setNickName(dto.getNickName());
+    user.setAuthType(AuthType.ROLE_USER);
+    userRepository.save(user);
+
+    // 로그인 처리
+    Authentication authentication = authenticationManagerBuilder.getObject()
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+            passwordEncoder.encode(user.getOauthId())));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
+  }
+
+  public TokenResponseDTO reIssueToken(ReIssueRequestDTO dto) {
+    tokenProvider.validateToken(dto.getRefreshToken());
+
+    LoginUser loginUser = (LoginUser) tokenProvider.getAuthentication(dto.getAccessToken()).getPrincipal();
+
+    return tokenProvider.createToken(loginUser);
+  }
+
+//  @Transactional
+//  public TokenVO reissue(ReissueForm form) {
+//    jwtProvider.validateToken(form.getRefreshToken());
+//    LoginUser loginUser = (LoginUser) jwtProvider.getAuthentication(form.getAccessToken()).getPrincipal();
+//
+//    TokenVO tokenVO = jwtProvider.createToken(loginUser);
+//    return tokenVO;
+//  }
+//
 }

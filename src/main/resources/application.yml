@@ -29,3 +29,8 @@ jwt:
   secret: ${{ secrets.JWT_SECRET }}
   access-token-expire-time: 1800000     # 30 min
   refresh-token-expire-time: 604800000  # 7 day
+
+auth:
+  google:
+    url:
+      user-info: https://www.googleapis.com/oauth2/v2/userinfo

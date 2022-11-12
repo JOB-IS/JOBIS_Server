@@ -1,5 +1,6 @@
 package com.jobis.domain.entity;
 
+import com.jobis.domain.code.AuthType;
 import com.jobis.domain.code.OauthProviderType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,14 +28,21 @@ public class User extends BaseTime {
   @Column(name = "user_id")
   private Long id;
 
-  @Column(name = "nick_name", nullable = false, unique = true)
-  private String nickName;
+  @Column(name = "email", nullable = false)
+  private String email;
 
   @Column(name = "oauth_id", nullable = false, unique = true)
   private String oauthId;
 
+  @Column(name = "nick_name", unique = true)
+  private String nickName;    // nickname == null : 회원가입 완료 이전
+
   @Column(name = "oauth_provider_type", nullable = false)
   @Enumerated(EnumType.STRING)
   private OauthProviderType oauthProviderType;
+
+  @Column(name = "auth_type", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private AuthType authType;
 
 }
