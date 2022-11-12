@@ -55,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .accessDeniedHandler(jwtAccessDeniedHandler)
         .and()
         .authorizeRequests()
-          .antMatchers("/api/v1/auth/login").permitAll()
           .antMatchers("/api/v1/auth/additional-info").hasRole(AuthType.ROLE_PRE_USER.getValueWithoutPrefix())
+          .antMatchers("/api/v1/auth/**").permitAll()
 
           // TODO DELETE
           .antMatchers("/api/v1/hello/real-user").hasRole(AuthType.ROLE_USER.getValueWithoutPrefix())

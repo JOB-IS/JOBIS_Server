@@ -3,6 +3,7 @@ package com.jobis.web.controller;
 import com.jobis.config.security.LoginUser;
 import com.jobis.web.dto.request.AddAdditionalInfoRequestDTO;
 import com.jobis.web.dto.request.OauthLoginRequestDTO;
+import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.service.AuthService;
 import javax.validation.Valid;
@@ -34,6 +35,13 @@ public class AuthController {
       @AuthenticationPrincipal LoginUser loginUser,
       @Valid @RequestBody AddAdditionalInfoRequestDTO dto) {
     TokenResponseDTO responseDTO = authService.addAdditionalInfo(dto, loginUser.getUserId());
+    return ResponseEntity.ok(responseDTO);
+  }
+
+  @PostMapping(value = "/re-issue", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<TokenResponseDTO> reIssueToken(
+      @Valid @RequestBody ReIssueRequestDTO dto) {
+    TokenResponseDTO responseDTO = authService.reIssueToken(dto);
     return ResponseEntity.ok(responseDTO);
   }
 

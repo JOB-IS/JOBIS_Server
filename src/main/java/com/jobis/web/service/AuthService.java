@@ -12,6 +12,7 @@ import com.jobis.exception.ResourceNotFoundException;
 import com.jobis.exception.ResourceNotFoundException.ResourceNotFoundExceptionCode;
 import com.jobis.web.dto.request.AddAdditionalInfoRequestDTO;
 import com.jobis.web.dto.request.OauthLoginRequestDTO;
+import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
 import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
@@ -93,4 +94,21 @@ public class AuthService {
     return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
   }
 
+  public TokenResponseDTO reIssueToken(ReIssueRequestDTO dto) {
+    tokenProvider.validateToken(dto.getRefreshToken());
+
+    LoginUser loginUser = (LoginUser) tokenProvider.getAuthentication(dto.getAccessToken()).getPrincipal();
+
+    return tokenProvider.createToken(loginUser);
+  }
+
+//  @Transactional
+//  public TokenVO reissue(ReissueForm form) {
+//    jwtProvider.validateToken(form.getRefreshToken());
+//    LoginUser loginUser = (LoginUser) jwtProvider.getAuthentication(form.getAccessToken()).getPrincipal();
+//
+//    TokenVO tokenVO = jwtProvider.createToken(loginUser);
+//    return tokenVO;
+//  }
+//
 }
