@@ -8,6 +8,9 @@ import com.jobis.domain.entity.User;
 import com.jobis.domain.repository.UserRepository;
 import com.jobis.exception.AuthenticationException;
 import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
+import com.jobis.exception.ResourceNotFoundException;
+import com.jobis.exception.ResourceNotFoundException.ResourceNotFoundExceptionCode;
+import com.jobis.web.dto.request.AddAdditionalInfoRequestDTO;
 import com.jobis.web.dto.request.OauthLoginRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
@@ -56,6 +59,30 @@ public class AuthService {
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
     }
+
+    // 로그인 처리
+    Authentication authentication = authenticationManagerBuilder.getObject()
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+            passwordEncoder.encode(user.getOauthId())));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
+  }
+
+  @Transactional
+  public TokenResponseDTO addAdditionalInfo(AddAdditionalInfoRequestDTO dto, long userId) {
+    User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(
+        ResourceNotFoundExceptionCode.USER_NOT_FOUND));
+
+    // nickName 중복 검사
+    if (userRepository.existsByNickName(dto.getNickName())) {
+      throw new AuthenticationException(AuthenticationExceptionCode.DUPLICATE_NICKNAME);
+    }
+
+    // USER 변경
+    user.setNickName(dto.getNickName());
+    user.setAuthType(AuthType.ROLE_USER);
+    userRepository.save(user);
 
     // 로그인 처리
     Authentication authentication = authenticationManagerBuilder.getObject()

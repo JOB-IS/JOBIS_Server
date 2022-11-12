@@ -7,7 +7,8 @@ public class AuthenticationException extends CommonException {
   public enum AuthenticationExceptionCode implements ResponseCode {
     NOT_AUTHENTICATED("ATN-001", "not authenticated"),
     INVALID_OAUTH_TOKEN("ATN-002", "invalid oauth token"),
-    NEED_NICKNAME("ATN-003", "need nickname");
+    NEED_ADDITIONAL_INFO("ATN-003", "need additional information"),
+    DUPLICATE_NICKNAME("ATN-004", "nickname is duplicated");
 
     private String code;
     private String message;
