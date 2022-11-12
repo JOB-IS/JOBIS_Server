@@ -8,6 +8,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByOauthId(String oAuthId);
 
-  Optional<User> findByEmailAndNickNameIsNotNull(String email);
+  Optional<User> findByEmail(String email);
 
 }

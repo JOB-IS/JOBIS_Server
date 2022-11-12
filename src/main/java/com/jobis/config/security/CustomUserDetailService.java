@@ -16,7 +16,7 @@ public class CustomUserDetailService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     // TODO nickname 없어서 권한 오류가 생기는지 exception 으로 분기시켜 반환하도록 CustomAuthProvider 생성
-    return userRepository.findByEmailAndNickNameIsNotNull(email)
+    return userRepository.findByEmail(email)
         .map(LoginUser::new)
         .orElseThrow(() -> new UsernameNotFoundException("user not found"));
   }

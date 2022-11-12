@@ -2,6 +2,7 @@ package com.jobis.web.service;
 
 import com.jobis.config.security.LoginUser;
 import com.jobis.config.security.TokenProvider;
+import com.jobis.domain.code.AuthType;
 import com.jobis.domain.code.OauthProviderType;
 import com.jobis.domain.entity.User;
 import com.jobis.domain.repository.UserRepository;
@@ -46,12 +47,13 @@ public class AuthService {
     // 가입 여부 확인
     User user = userRepository.findByOauthId(vo.getId()).orElse(null);
 
-    // 신규 가입 : JWT 발금해도 NickName 이 없기 때문에 권한 오류 반환
+    // PRE_USER 신규 등록
     if (user == null) {
       user = new User();
       user.setEmail(vo.getEmail());
       user.setOauthId(vo.getId());
       user.setOauthProviderType(OauthProviderType.GOOGLE);
+      user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
     }
 
