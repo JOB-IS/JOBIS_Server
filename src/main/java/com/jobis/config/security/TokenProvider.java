@@ -1,5 +1,6 @@
 package com.jobis.config.security;
 
+import com.jobis.domain.code.AuthType;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -86,6 +87,7 @@ public class TokenProvider {
         .oauthId(claims.get("oauthId", String.class))
         .id(claims.get("userId", Long.class))
         .nickName(claims.get("nickName", String.class))
+        .authType(AuthType.valueOf(claims.get("auth", String.class)))
         .oauthProviderType(null)
         .build();
   }
