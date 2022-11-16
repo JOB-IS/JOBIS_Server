@@ -102,13 +102,6 @@ public class AuthService {
     return tokenProvider.createToken(loginUser);
   }
 
-//  @Transactional
-//  public TokenVO reissue(ReissueForm form) {
-//    jwtProvider.validateToken(form.getRefreshToken());
-//    LoginUser loginUser = (LoginUser) jwtProvider.getAuthentication(form.getAccessToken()).getPrincipal();
-//
-//    TokenVO tokenVO = jwtProvider.createToken(loginUser);
-//    return tokenVO;
-//  }
-//
+
+
 }
