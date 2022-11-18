@@ -15,7 +15,8 @@ import com.jobis.web.dto.request.OauthLoginRequestDTO;
 import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
-import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
+import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
+import com.jobis.web.helper.oauth.dto.KakaoTokenResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -39,7 +40,7 @@ public class AuthService {
   public TokenResponseDTO oauthLogin(OauthLoginRequestDTO dto) {
 
     // user 정보 요청
-    GoogleUserInfoVO vo = null;
+    OauthUserInfoVO vo = null;
     if (OauthProviderType.GOOGLE.equals(dto.getOauthProviderType())) {
       vo = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
     }

@@ -1,6 +1,6 @@
 package com.jobis.web.helper.oauth;
 
-import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
+import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
 import com.jobis.web.helper.oauth.dto.KakaoTokenResponseDTO;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class OauthHelper {
 
   private final RestTemplate restTemplate;
 
-  public GoogleUserInfoVO getUserInfoFromGoogle(String accessToken) {
+  public OauthUserInfoVO getUserInfoFromGoogle(String accessToken) {
 
 //    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 //    params.add("name", "Frank Oh");
@@ -46,9 +46,9 @@ public class OauthHelper {
 
     try {
       // TODO RestTemplate Util Class?
-      ResponseEntity<GoogleUserInfoVO> apiResponseJson = restTemplate.getForEntity(
+      ResponseEntity<OauthUserInfoVO> apiResponseJson = restTemplate.getForEntity(
           GOOGLE_URL_FOR_USER_INFO + "?access_token=" + accessToken,
-          GoogleUserInfoVO.class);
+          OauthUserInfoVO.class);
       return apiResponseJson.getBody();
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
