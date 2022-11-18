@@ -40,23 +40,22 @@ public class AuthService {
   public TokenResponseDTO oauthLogin(OauthLoginRequestDTO dto) {
 
     // user 정보 요청
-    OauthUserInfoVO vo = null;
+    OauthUserInfoVO oauthUserInfoVO = null;
     if (OauthProviderType.GOOGLE.equals(dto.getOauthProviderType())) {
-      vo = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
+      oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
     }
-
-    if (vo == null) {
+    if (oauthUserInfoVO == null) {
       throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
     }
 
     // 가입 여부 확인
-    User user = userRepository.findByOauthId(vo.getId()).orElse(null);
+    User user = userRepository.findByOauthId(oauthUserInfoVO.getId()).orElse(null);
 
     // PRE_USER 신규 등록
     if (user == null) {
       user = new User();
-      user.setEmail(vo.getEmail());
-      user.setOauthId(vo.getId());
+      user.setEmail(oauthUserInfoVO.getEmail());
+      user.setOauthId(oauthUserInfoVO.getId());
       user.setOauthProviderType(OauthProviderType.GOOGLE);
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
@@ -103,6 +102,54 @@ public class AuthService {
     return tokenProvider.createToken(loginUser);
   }
 
+  @Transactional
+  public TokenResponseDTO oauthLoginV2(OauthProviderType oauthProviderType, String code) {
 
+    OauthUserInfoVO oauthUserInfoVO;
+
+    if (OauthProviderType.GOOGLE.equals(oauthProviderType)) {
+      // TODO access token 요청
+
+
+      // user 정보 요청
+      oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle("TODO - ACCESS TOKEN");
+      if (oauthUserInfoVO == null) {
+        throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
+      }
+    } else {
+      // access token 요청
+      KakaoTokenResponseDTO kakaoTokenResponseDTO = oauthHelper.getAccessTokenByKakao(code);
+      if (kakaoTokenResponseDTO == null) {
+        throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_CODE);
+      }
+
+      // user 정보 요청
+      oauthUserInfoVO = oauthHelper.getUserInfoFromKakao(kakaoTokenResponseDTO.getAccessToken());
+      if (oauthUserInfoVO == null) {
+        throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
+      }
+    }
+
+    // 가입 여부 확인
+    User user = userRepository.findByOauthId(oauthUserInfoVO.getId()).orElse(null);
+
+    // PRE_USER 신규 등록
+    if (user == null) {
+      user = new User();
+      user.setEmail(oauthUserInfoVO.getEmail());
+      user.setOauthId(oauthUserInfoVO.getId());
+      user.setOauthProviderType(OauthProviderType.KAKAO);
+      user.setAuthType(AuthType.ROLE_PRE_USER);
+      userRepository.save(user);
+    }
+
+    // 로그인 처리
+    Authentication authentication = authenticationManagerBuilder.getObject()
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+            passwordEncoder.encode(user.getOauthId())));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
+  }
 
 }

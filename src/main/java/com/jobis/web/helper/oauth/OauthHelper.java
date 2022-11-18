@@ -1,5 +1,9 @@
 package com.jobis.web.helper.oauth;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.jobis.exception.AuthenticationException;
+import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
 import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
 import com.jobis.web.helper.oauth.dto.KakaoTokenResponseDTO;
 import java.util.Collections;
@@ -75,6 +79,37 @@ public class OauthHelper {
       ResponseEntity<KakaoTokenResponseDTO> response = restTemplate.postForEntity(
           KAKAO_URL_FOR_ACCESS_TOKEN, entity, KakaoTokenResponseDTO.class);
       return response.getBody();
+    } catch (HttpClientErrorException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public OauthUserInfoVO getUserInfoFromKakao(String accessToken) {
+    try {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+      headers.set("Authorization", "Bearer " + accessToken);
+
+      HttpEntity entity = new HttpEntity<>(headers);
+
+      ResponseEntity<String> response = restTemplate.postForEntity(
+          "https://kapi.kakao.com/v2/user/me", entity, String.class);
+
+      // Json Parsing
+      JsonElement element = JsonParser.parseString(response.getBody());
+
+      String uid = element.getAsJsonObject().get("id").getAsString();
+      boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+      if (!hasEmail) {
+        throw new AuthenticationException(AuthenticationExceptionCode.EMAIL_NOT_FOUND);
+      }
+      String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+
+      OauthUserInfoVO vo = new OauthUserInfoVO();
+      vo.setEmail(email);
+      vo.setId(uid);
+      return vo;
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
       return null;
