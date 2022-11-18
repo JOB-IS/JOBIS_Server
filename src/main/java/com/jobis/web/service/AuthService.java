@@ -106,19 +106,18 @@ public class AuthService {
   public TokenResponseDTO oauthLoginV2(OauthProviderType oauthProviderType, String code) {
 
     OauthUserInfoVO oauthUserInfoVO;
-
     if (OauthProviderType.GOOGLE.equals(oauthProviderType)) {
-      // TODO access token 요청
-
+      // TODO Response DTO 따로 관리? accessToken만 파싱?
+      KakaoTokenResponseDTO kakaoTokenResponseDTO = oauthHelper.getAccessTokenFromGoogle(code);
 
       // user 정보 요청
-      oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle("TODO - ACCESS TOKEN");
+      oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(kakaoTokenResponseDTO.getAccessToken());
       if (oauthUserInfoVO == null) {
         throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
       }
     } else {
       // access token 요청
-      KakaoTokenResponseDTO kakaoTokenResponseDTO = oauthHelper.getAccessTokenByKakao(code);
+      KakaoTokenResponseDTO kakaoTokenResponseDTO = oauthHelper.getAccessTokenFromKakao(code);
       if (kakaoTokenResponseDTO == null) {
         throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_CODE);
       }
@@ -138,7 +137,7 @@ public class AuthService {
       user = new User();
       user.setEmail(oauthUserInfoVO.getEmail());
       user.setOauthId(oauthUserInfoVO.getId());
-      user.setOauthProviderType(OauthProviderType.KAKAO);
+      user.setOauthProviderType(oauthProviderType);
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
     }

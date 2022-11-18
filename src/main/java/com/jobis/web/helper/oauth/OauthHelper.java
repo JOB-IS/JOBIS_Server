@@ -23,9 +23,6 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class OauthHelper {
 
-  @Value("${auth.google.url.user-info}")
-  private String GOOGLE_URL_FOR_USER_INFO;
-
   @Value("${auth.kakao.client_id}")
   private String KAKAO_CLIENT_ID;
   @Value("${auth.kakao.client_secret}")
@@ -34,20 +31,47 @@ public class OauthHelper {
   private String KAKAO_REDIRECT_URL;
   @Value("${auth.kakao.url.access-token}")
   private String KAKAO_URL_FOR_ACCESS_TOKEN;
+  @Value("${auth.kakao.url.user-info}")
+  private String KAKAO_URL_FOR_USER_INFO;
+
+  @Value("${auth.google.client_id}")
+  private String GOOGLE_CLIENT_ID;
+  @Value("${auth.google.client_secret}")
+  private String GOOGLE_CLIENT_SECRET;
+  @Value("${auth.google.redirect_url}")
+  private String GOOGLE_REDIRECT_URL;
+  @Value("${auth.google.url.access-token}")
+  private String GOOGLE_URL_FOR_ACCESS_TOKEN;
+  @Value("${auth.google.url.user-info}")
+  private String GOOGLE_URL_FOR_USER_INFO;
+
 
   private final RestTemplate restTemplate;
 
+  public KakaoTokenResponseDTO getAccessTokenFromGoogle(String code) {
+    MultiValueMap<String, String> requestObject = new LinkedMultiValueMap<>();
+    requestObject.put("grant_type", Collections.singletonList("authorization_code"));
+    requestObject.put("client_id", Collections.singletonList(GOOGLE_CLIENT_ID));
+    requestObject.put("client_secret", Collections.singletonList(GOOGLE_CLIENT_SECRET));
+    requestObject.put("redirect_uri", Collections.singletonList(GOOGLE_REDIRECT_URL));
+    requestObject.put("code", Collections.singletonList(code));
+
+    try {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+      HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestObject, headers);
+
+      ResponseEntity<KakaoTokenResponseDTO> response = restTemplate.postForEntity(
+          GOOGLE_URL_FOR_ACCESS_TOKEN, entity, KakaoTokenResponseDTO.class);
+      return response.getBody();
+    } catch (HttpClientErrorException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   public OauthUserInfoVO getUserInfoFromGoogle(String accessToken) {
-
-//    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//    params.add("name", "Frank Oh");
-//    params.add("country", "US");
-//
-//    ResponseEntity<Employee> responseEntity = restTemplate.getForEntity(BASE_URL + "/{name}/{country}", Employee.class, params);
-//    log.info("statusCode: {}", responseEntity.getStatusCode());
-//    log.info("getBody: {}", responseEntity.getBody());
-
-
     try {
       // TODO RestTemplate Util Class?
       ResponseEntity<OauthUserInfoVO> apiResponseJson = restTemplate.getForEntity(
@@ -56,13 +80,11 @@ public class OauthHelper {
       return apiResponseJson.getBody();
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
-//      System.out.println(e.getStatusCode());
-//      System.out.println(e.getResponseBodyAsString());
       return null;
     }
   }
 
-  public KakaoTokenResponseDTO getAccessTokenByKakao(String code) {
+  public KakaoTokenResponseDTO getAccessTokenFromKakao(String code) {
     MultiValueMap<String, String> requestObject = new LinkedMultiValueMap<>();
     requestObject.put("grant_type", Collections.singletonList("authorization_code"));
     requestObject.put("client_id", Collections.singletonList(KAKAO_CLIENT_ID));
@@ -94,7 +116,7 @@ public class OauthHelper {
       HttpEntity entity = new HttpEntity<>(headers);
 
       ResponseEntity<String> response = restTemplate.postForEntity(
-          "https://kapi.kakao.com/v2/user/me", entity, String.class);
+          KAKAO_URL_FOR_USER_INFO, entity, String.class);
 
       // Json Parsing
       JsonElement element = JsonParser.parseString(response.getBody());
