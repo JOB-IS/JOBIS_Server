@@ -34,3 +34,6 @@ auth:
   google:
     url:
       user-info: https://www.googleapis.com/oauth2/v2/userinfo
+  kakao:
+    url:
+      user-info: https://kapi.kakao.com/v2/user/me

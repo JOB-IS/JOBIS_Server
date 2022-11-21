@@ -39,6 +39,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	// http client
 	implementation 'org.apache.httpcomponents:httpclient:4.3.4'
+	// gson (json converter)
+	implementation 'com.google.code.gson:gson:2.9.0'
 	// swagger
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'

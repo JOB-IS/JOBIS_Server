@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum OauthProviderType {
 
-  GOOGLE("GOOGLE");
+  GOOGLE("google"),
+  KAKAO("kakao");
 
   private final String value;
 
