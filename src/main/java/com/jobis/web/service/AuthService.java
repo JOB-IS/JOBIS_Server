@@ -42,7 +42,10 @@ public class AuthService {
     OauthUserInfoVO oauthUserInfoVO = null;
     if (OauthProviderType.GOOGLE.equals(dto.getOauthProviderType())) {
       oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
+    } else {
+      oauthUserInfoVO = oauthHelper.getUserInfoFromKakao(dto.getAccessToken());
     }
+
     if (oauthUserInfoVO == null) {
       throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
     }
@@ -55,7 +58,7 @@ public class AuthService {
       user = new User();
       user.setEmail(oauthUserInfoVO.getEmail());
       user.setOauthId(oauthUserInfoVO.getId());
-      user.setOauthProviderType(OauthProviderType.GOOGLE);
+      user.setOauthProviderType(dto.getOauthProviderType());
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
     }
