@@ -16,7 +16,6 @@ import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
 import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
-import com.jobis.web.helper.oauth.dto.KakaoTokenResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -100,55 +99,6 @@ public class AuthService {
     LoginUser loginUser = (LoginUser) tokenProvider.getAuthentication(dto.getAccessToken()).getPrincipal();
 
     return tokenProvider.createToken(loginUser);
-  }
-
-  @Transactional
-  public TokenResponseDTO oauthLoginV2(OauthProviderType oauthProviderType, String code) {
-
-    OauthUserInfoVO oauthUserInfoVO;
-    if (OauthProviderType.GOOGLE.equals(oauthProviderType)) {
-      // TODO Response DTO 따로 관리? accessToken만 파싱?
-      KakaoTokenResponseDTO kakaoTokenResponseDTO = oauthHelper.getAccessTokenFromGoogle(code);
-
-      // user 정보 요청
-      oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(kakaoTokenResponseDTO.getAccessToken());
-      if (oauthUserInfoVO == null) {
-        throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
-      }
-    } else {
-      // access token 요청
-      KakaoTokenResponseDTO kakaoTokenResponseDTO = oauthHelper.getAccessTokenFromKakao(code);
-      if (kakaoTokenResponseDTO == null) {
-        throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_CODE);
-      }
-
-      // user 정보 요청
-      oauthUserInfoVO = oauthHelper.getUserInfoFromKakao(kakaoTokenResponseDTO.getAccessToken());
-      if (oauthUserInfoVO == null) {
-        throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
-      }
-    }
-
-    // 가입 여부 확인
-    User user = userRepository.findByOauthId(oauthUserInfoVO.getId()).orElse(null);
-
-    // PRE_USER 신규 등록
-    if (user == null) {
-      user = new User();
-      user.setEmail(oauthUserInfoVO.getEmail());
-      user.setOauthId(oauthUserInfoVO.getId());
-      user.setOauthProviderType(oauthProviderType);
-      user.setAuthType(AuthType.ROLE_PRE_USER);
-      userRepository.save(user);
-    }
-
-    // 로그인 처리
-    Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
-            passwordEncoder.encode(user.getOauthId())));
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
   }
 
 }
