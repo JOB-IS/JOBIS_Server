@@ -1,6 +1,8 @@
 package com.jobis.config.security;
 
 import com.jobis.domain.code.AuthType;
+import com.jobis.exception.AuthenticationException;
+import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -102,16 +104,19 @@ public class TokenProvider {
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
       return true;
-    } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-//      log.info("wrong jwt signature");
-    } catch (ExpiredJwtException e) {
-//      log.info("expired jwt token");
-    } catch (UnsupportedJwtException e) {
-//      log.info("unsupported jwt token");
-    } catch (IllegalArgumentException e) {
-//      log.info("wrong jwt token");
+    } catch (Exception e) {
+      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_JWT_TOKEN);
     }
-    return false;
+//    catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+////      log.info("wrong jwt signature");
+//    } catch (ExpiredJwtException e) {
+////      log.info("expired jwt token");
+//    } catch (UnsupportedJwtException e) {
+////      log.info("unsupported jwt token");
+//    } catch (IllegalArgumentException e) {
+////      log.info("wrong jwt token");
+//    }
+//    return false;
   }
 
   private Claims parseClaims(String accessToken) {
