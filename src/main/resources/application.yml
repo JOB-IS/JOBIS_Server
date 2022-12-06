@@ -1,6 +1,13 @@
 server:
   port: 8080
 
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
 # jpa mysql
 spring:
   jpa:
