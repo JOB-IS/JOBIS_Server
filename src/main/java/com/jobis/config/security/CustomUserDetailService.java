@@ -1,6 +1,6 @@
 package com.jobis.config.security;
 
-import com.jobis.domain.repository.UserRepository;
+import com.jobis.domain.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

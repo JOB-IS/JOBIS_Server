@@ -5,7 +5,7 @@ import com.jobis.config.security.TokenProvider;
 import com.jobis.domain.code.AuthType;
 import com.jobis.domain.code.OauthProviderType;
 import com.jobis.domain.entity.User;
-import com.jobis.domain.repository.UserRepository;
+import com.jobis.domain.repository.user.UserRepository;
 import com.jobis.exception.AuthenticationException;
 import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
 import com.jobis.exception.ResourceNotFoundException;
