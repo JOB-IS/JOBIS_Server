@@ -1,4 +1,4 @@
-package com.jobis.domain.repository;
+package com.jobis.domain.repository.recruitment;
 
 import com.jobis.domain.entity.Recruitment;
 import org.springframework.data.jpa.repository.JpaRepository;
