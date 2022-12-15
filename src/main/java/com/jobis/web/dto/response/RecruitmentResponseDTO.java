@@ -2,11 +2,14 @@ package com.jobis.web.dto.response;
 
 import com.jobis.domain.code.RecruitmentStatus;
 import com.jobis.domain.code.WorkType;
+import com.jobis.domain.entity.Recruitment;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class RecruitmentResponseDTO {
 
@@ -31,6 +34,19 @@ public class RecruitmentResponseDTO {
     this.link = link;
     this.recruitmentStatus = recruitmentStatus;
     this.workType = workType;
+  }
+
+  public static RecruitmentResponseDTO valueOf(Recruitment recruitment) {
+    RecruitmentResponseDTO responseDTO = new RecruitmentResponseDTO();
+    responseDTO.setId(recruitment.getId());
+    responseDTO.setName(recruitment.getName());
+    responseDTO.setDescription(recruitment.getDescription());
+    responseDTO.setBody(recruitment.getBody());
+    responseDTO.setPosition(recruitment.getPosition());
+    responseDTO.setLink(recruitment.getLink());
+    responseDTO.setRecruitmentStatus(recruitment.getRecruitmentStatus());
+    responseDTO.setWorkType(recruitment.getWorkType());
+    return responseDTO;
   }
 
 }

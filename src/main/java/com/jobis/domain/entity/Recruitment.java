@@ -14,9 +14,9 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Getter
 @Setter
+@Getter
+@Entity
 public class Recruitment extends BaseTime {
 
   @Id
