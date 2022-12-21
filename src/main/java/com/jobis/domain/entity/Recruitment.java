@@ -2,6 +2,7 @@ package com.jobis.domain.entity;
 
 import com.jobis.domain.code.RecruitmentStatus;
 import com.jobis.domain.code.WorkType;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -40,5 +41,22 @@ public class Recruitment extends BaseTime {
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
   private User user;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Recruitment)) {
+      return false;
+    }
+    Recruitment that = (Recruitment) o;
+    return Objects.equals(getId(), that.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
 }
