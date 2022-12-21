@@ -3,6 +3,7 @@ package com.jobis.domain.entity;
 import com.jobis.domain.code.RecruitmentScheduleStatus;
 import com.jobis.domain.code.RecruitmentScheduleType;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -40,5 +41,22 @@ public class RecruitmentSchedule extends BaseTime {
   @ManyToOne
   @JoinColumn(name = "recruitment_id", referencedColumnName = "recruitment_id")
   private Recruitment recruitment;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof RecruitmentSchedule)) {
+      return false;
+    }
+    RecruitmentSchedule that = (RecruitmentSchedule) o;
+    return Objects.equals(getId(), that.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
 }

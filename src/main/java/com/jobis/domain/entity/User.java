@@ -2,6 +2,7 @@ package com.jobis.domain.entity;
 
 import com.jobis.domain.code.AuthType;
 import com.jobis.domain.code.OauthProviderType;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -44,5 +45,22 @@ public class User extends BaseTime {
   @Column(name = "auth_type", nullable = false)
   @Enumerated(EnumType.STRING)
   private AuthType authType;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof User)) {
+      return false;
+    }
+    User user = (User) o;
+    return Objects.equals(getId(), user.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
 }

@@ -6,7 +6,8 @@ public class ResourceNotFoundException extends CommonException {
 
   public enum ResourceNotFoundExceptionCode implements ResponseCode {
     RESOURCE_NOT_FOUND("RNF-001", "resource not found"),
-    USER_NOT_FOUND("RNF-002", "user not found");
+    USER_NOT_FOUND("RNF-002", "user not found"),
+    RECRUITMENT_NOT_FOUND("RNF-003", "recruitment not found");
 
     private String code;
     private String message;
