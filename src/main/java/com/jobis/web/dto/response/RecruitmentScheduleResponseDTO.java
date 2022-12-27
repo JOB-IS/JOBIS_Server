@@ -25,12 +25,15 @@ public class RecruitmentScheduleResponseDTO {
   private RecruitmentScheduleType recruitmentScheduleType;
   private RecruitmentScheduleStatus recruitmentScheduleStatus;
 
+  // recruitment
+  private Long recruitmentId;
+
   @QueryProjection
   public RecruitmentScheduleResponseDTO(Long id, String name, String description,
       String body, LocalDateTime startDateTime, LocalDateTime endDateTime,
       LocalDate startDate, LocalDate endDate,
       RecruitmentScheduleType recruitmentScheduleType,
-      RecruitmentScheduleStatus recruitmentScheduleStatus) {
+      RecruitmentScheduleStatus recruitmentScheduleStatus, Long recruitmentId) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -41,5 +44,6 @@ public class RecruitmentScheduleResponseDTO {
     this.endDate = endDate;
     this.recruitmentScheduleType = recruitmentScheduleType;
     this.recruitmentScheduleStatus = recruitmentScheduleStatus;
+    this.recruitmentId = recruitmentId;
   }
 }

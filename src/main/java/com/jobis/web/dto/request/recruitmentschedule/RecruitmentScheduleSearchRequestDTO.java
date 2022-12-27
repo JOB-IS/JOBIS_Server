@@ -19,5 +19,6 @@ public class RecruitmentScheduleSearchRequestDTO extends PagingDTO {
   private LocalDate toDate;
   private RecruitmentScheduleType recruitmentScheduleType;
   private RecruitmentScheduleStatus recruitmentScheduleStatus;
+  private Long recruitmentId;
 
 }

@@ -50,7 +50,8 @@ public class RecruitmentScheduleRepositoryImpl extends QuerydslRepositorySupport
             recruitmentSchedule.startDate,
             recruitmentSchedule.endDate,
             recruitmentSchedule.recruitmentScheduleType,
-            recruitmentSchedule.recruitmentScheduleStatus
+            recruitmentSchedule.recruitmentScheduleStatus,
+            recruitment.id
         ))
         .from(recruitmentSchedule)
         .leftJoin(recruitmentSchedule.recruitment, recruitment)
@@ -83,6 +84,9 @@ public class RecruitmentScheduleRepositoryImpl extends QuerydslRepositorySupport
     if (param.getRecruitmentScheduleStatus() != null) {
       booleanBuilder.and(
           recruitmentSchedule.recruitmentScheduleStatus.eq(param.getRecruitmentScheduleStatus()));
+    }
+    if (param.getRecruitmentId() != null) {
+      booleanBuilder.and(recruitment.id.eq(param.getRecruitmentId()));
     }
     if (param.getUserId() != null) {
       booleanBuilder.and(user.id.eq(param.getUserId()));

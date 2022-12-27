@@ -15,6 +15,7 @@ public class SearchRecruitmentScheduleParam {
   private LocalDate toDate;
   private RecruitmentScheduleType recruitmentScheduleType;
   private RecruitmentScheduleStatus recruitmentScheduleStatus;
+  private Long recruitmentId;
   private Long userId;
 
   public static SearchRecruitmentScheduleParam valueOf(RecruitmentScheduleSearchRequestDTO dto,
@@ -24,6 +25,7 @@ public class SearchRecruitmentScheduleParam {
     param.setToDate(dto.getToDate());
     param.setRecruitmentScheduleType(dto.getRecruitmentScheduleType());
     param.setRecruitmentScheduleStatus(dto.getRecruitmentScheduleStatus());
+    param.setRecruitmentId(dto.getRecruitmentId());
     param.setUserId(userId);
     return param;
   }
