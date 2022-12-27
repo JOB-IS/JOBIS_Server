@@ -42,7 +42,7 @@ public class RecruitmentSchedule extends BaseTime {
   private RecruitmentScheduleStatus recruitmentScheduleStatus;
 
   @ManyToOne
-  @JoinColumn(name = "recruitment_id", referencedColumnName = "recruitment_id")
+  @JoinColumn(name = "recruitment_id", nullable = false, referencedColumnName = "recruitment_id")
   private Recruitment recruitment;
 
   @Override
