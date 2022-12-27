@@ -2,6 +2,7 @@ package com.jobis.domain.entity;
 
 import com.jobis.domain.code.RecruitmentScheduleStatus;
 import com.jobis.domain.code.RecruitmentScheduleType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -31,6 +32,8 @@ public class RecruitmentSchedule extends BaseTime {
   private String body;
   private LocalDateTime startDateTime;
   private LocalDateTime endDateTime;
+  private LocalDate startDate;
+  private LocalDate endDate;
   @Column(name = "recruitment_schedule_type", nullable = false)
   @Enumerated(EnumType.STRING)
   private RecruitmentScheduleType recruitmentScheduleType;
@@ -39,7 +42,7 @@ public class RecruitmentSchedule extends BaseTime {
   private RecruitmentScheduleStatus recruitmentScheduleStatus;
 
   @ManyToOne
-  @JoinColumn(name = "recruitment_id", referencedColumnName = "recruitment_id")
+  @JoinColumn(name = "recruitment_id", nullable = false, referencedColumnName = "recruitment_id")
   private Recruitment recruitment;
 
   @Override
