@@ -44,3 +44,15 @@ auth:
   kakao:
     url:
       user-info: https://kapi.kakao.com/v2/user/me
+
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    disable-swagger-default-url: true
+    persistAuthorization: true
+  show-actuator: true
+  packages-to-scan: com.jobis.web
