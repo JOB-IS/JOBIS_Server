@@ -25,7 +25,6 @@ public class Recruitment extends BaseTime {
   @Column(name = "recruitment_id")
   private Long id;
   private String name;
-  @Column(columnDefinition = "TEXT")
   private String description;
   @Column(columnDefinition = "TEXT")
   private String body;
