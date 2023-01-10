@@ -13,6 +13,7 @@ public class CreateRecruitmentRequestDTO {
   private String name;
   private String description;
   private String body;
+  private String companyName;
   private String position;
   private String link;
   @NotNull

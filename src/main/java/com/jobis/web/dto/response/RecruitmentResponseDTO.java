@@ -17,6 +17,7 @@ public class RecruitmentResponseDTO {
   private String name;
   private String description;
   private String body;
+  private String companyName;
   private String position;
   private String link;
   private RecruitmentStatus recruitmentStatus;
@@ -24,12 +25,13 @@ public class RecruitmentResponseDTO {
 
   @QueryProjection
   public RecruitmentResponseDTO(Long id, String name, String description, String body,
-      String position, String link, RecruitmentStatus recruitmentStatus,
-      WorkType workType) {
+      String companyName, String position, String link,
+      RecruitmentStatus recruitmentStatus, WorkType workType) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.body = body;
+    this.companyName = companyName;
     this.position = position;
     this.link = link;
     this.recruitmentStatus = recruitmentStatus;
@@ -42,6 +44,7 @@ public class RecruitmentResponseDTO {
     responseDTO.setName(recruitment.getName());
     responseDTO.setDescription(recruitment.getDescription());
     responseDTO.setBody(recruitment.getBody());
+    responseDTO.setCompanyName(recruitment.getCompanyName());
     responseDTO.setPosition(recruitment.getPosition());
     responseDTO.setLink(recruitment.getLink());
     responseDTO.setRecruitmentStatus(recruitment.getRecruitmentStatus());

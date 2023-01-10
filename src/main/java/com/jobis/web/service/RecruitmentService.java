@@ -45,6 +45,7 @@ public class RecruitmentService {
     recruitment.setName(dto.getName());
     recruitment.setDescription(dto.getDescription());
     recruitment.setBody(dto.getBody());
+    recruitment.setCompanyName(dto.getCompanyName());
     recruitment.setPosition(dto.getPosition());
     recruitment.setLink(dto.getLink());
     recruitment.setRecruitmentStatus(dto.getRecruitmentStatus());

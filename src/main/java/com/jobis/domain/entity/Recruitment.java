@@ -29,6 +29,7 @@ public class Recruitment extends BaseTime {
   private String description;
   @Column(columnDefinition = "TEXT")
   private String body;
+  private String companyName;
   private String position;
   private String link;
   @Enumerated(EnumType.STRING)
