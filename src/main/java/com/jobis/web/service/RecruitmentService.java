@@ -1,9 +1,11 @@
 package com.jobis.web.service;
 
 import com.jobis.domain.entity.Recruitment;
+import com.jobis.domain.entity.RecruitmentSchedule;
 import com.jobis.domain.entity.User;
 import com.jobis.domain.repository.recruitment.RecruitmentRepository;
 import com.jobis.domain.repository.recruitment.param.SearchRecruitmentParam;
+import com.jobis.domain.repository.recruitmentSchedule.RecruitmentScheduleRepository;
 import com.jobis.domain.repository.user.UserRepository;
 import com.jobis.exception.AuthenticationException;
 import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
@@ -12,7 +14,10 @@ import com.jobis.exception.ResourceNotFoundException.ResourceNotFoundExceptionCo
 import com.jobis.web.dto.request.recruitment.CreateRecruitmentRequestDTO;
 import com.jobis.web.dto.request.recruitment.RecruitmentSearchRequestDTO;
 import com.jobis.web.dto.request.recruitment.UpdateRecruitmentRequestDTO;
+import com.jobis.web.dto.request.recruitment.sub.CreateRecruitmentScheduleByRecruitmentRequestDTO;
 import com.jobis.web.dto.response.RecruitmentResponseDTO;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +31,7 @@ import org.springframework.util.StringUtils;
 public class RecruitmentService {
 
   private final RecruitmentRepository recruitmentRepository;
+  private final RecruitmentScheduleRepository recruitmentScheduleRepository;
   private final UserRepository userRepository;
 
   public Page<RecruitmentResponseDTO> getRecruitments(long userId,
@@ -52,6 +58,23 @@ public class RecruitmentService {
     recruitment.setWorkType(dto.getWorkType());
     recruitment.setUser(user);
     recruitmentRepository.save(recruitment);
+
+    List<RecruitmentSchedule> recruitmentScheduleList = new ArrayList<>();
+    for (CreateRecruitmentScheduleByRecruitmentRequestDTO scheduleList :
+        dto.getRecruitmentScheduleList()) {
+      RecruitmentSchedule recruitmentSchedule = new RecruitmentSchedule();
+      recruitmentSchedule.setName(scheduleList.getName());
+      recruitmentSchedule.setDescription(scheduleList.getDescription());
+      recruitmentSchedule.setStartDateTime(scheduleList.getStartDateTime());
+      recruitmentSchedule.setEndDateTime(scheduleList.getEndDateTime());
+      recruitmentSchedule.setStartDate(scheduleList.getStartDate());
+      recruitmentSchedule.setEndDate(scheduleList.getEndDate());
+      recruitmentSchedule.setRecruitmentScheduleType(scheduleList.getRecruitmentScheduleType());
+      recruitmentSchedule.setRecruitmentScheduleStatus(scheduleList.getRecruitmentScheduleStatus());
+      recruitmentSchedule.setRecruitment(recruitment);
+      recruitmentScheduleList.add(recruitmentSchedule);
+    }
+    recruitmentScheduleRepository.saveAll(recruitmentScheduleList);
 
     return RecruitmentResponseDTO.valueOf(recruitment);
   }
