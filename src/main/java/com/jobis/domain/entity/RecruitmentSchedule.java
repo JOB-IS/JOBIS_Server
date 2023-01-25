@@ -23,7 +23,7 @@ import lombok.Setter;
 public class RecruitmentSchedule extends BaseTime {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "recruitment_schedule_id")
   private Long id;
   private String name;

@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Holiday extends BaseTime {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "holiday_id")
   private Long id;
 
