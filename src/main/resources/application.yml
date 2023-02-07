@@ -34,8 +34,8 @@ spring:
 jwt:
   header: ${{ secrets.JWT_HEADER }}
   secret: ${{ secrets.JWT_SECRET }}
-  access-token-expire-time: 1800000     # 30 min
-  refresh-token-expire-time: 604800000  # 7 day
+  access-token-expire-time: 604800000    # 7 day
+  refresh-token-expire-time: 2592000000  # 30 day
 
 auth:
   google:
