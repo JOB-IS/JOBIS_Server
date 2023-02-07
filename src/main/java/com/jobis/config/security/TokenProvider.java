@@ -68,7 +68,7 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS512) // 키와 알고리즘 설정
         .compact();
 
-    return new TokenResponseDTO(accessToken, refreshToken, loginUser.getAuthType());
+    return new TokenResponseDTO(accessToken, refreshToken, loginUser.getAuthType(), ACCESS_TOKEN_EXPIRE_TIME, REFRESH_TOKEN_EXPIRE_TIME);
   }
 
   public Authentication getAuthentication(String accessToken) {

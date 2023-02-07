@@ -11,5 +11,7 @@ public class TokenResponseDTO {
   private String accessToken;
   private String refreshToken;
   private AuthType authType;
+  private long accessTokenExpireTime;
+  private long refreshTokenExpireTime;
 
 }
