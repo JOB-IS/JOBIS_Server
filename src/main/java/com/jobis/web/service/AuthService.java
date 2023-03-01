@@ -36,15 +36,9 @@ public class AuthService {
   private final OauthHelper oauthHelper;
 
   @Transactional
-  public TokenResponseDTO oauthLogin(OauthLoginRequestDTO dto) {
-
+  public TokenResponseDTO kakaoOauthLogin(OauthLoginRequestDTO dto) {
     // user 정보 요청
-    OauthUserInfoVO oauthUserInfoVO = null;
-    if (OauthProviderType.GOOGLE.equals(dto.getOauthProviderType())) {
-      oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
-    } else {
-      oauthUserInfoVO = oauthHelper.getUserInfoFromKakao(dto.getAccessToken());
-    }
+    OauthUserInfoVO oauthUserInfoVO = oauthHelper.getUserInfoFromKakao(dto.getAccessToken());
 
     if (oauthUserInfoVO == null) {
       throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
@@ -58,7 +52,38 @@ public class AuthService {
       user = new User();
       user.setEmail(oauthUserInfoVO.getEmail());
       user.setOauthId(oauthUserInfoVO.getId());
-      user.setOauthProviderType(dto.getOauthProviderType());
+      user.setOauthProviderType(OauthProviderType.KAKAO);
+      user.setAuthType(AuthType.ROLE_PRE_USER);
+      userRepository.save(user);
+    }
+
+    // 로그인 처리
+    Authentication authentication = authenticationManagerBuilder.getObject()
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+            passwordEncoder.encode(user.getOauthId())));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return tokenProvider.createToken((LoginUser) authentication.getPrincipal());
+  }
+
+  @Transactional
+  public TokenResponseDTO googleOauthLogin(OauthLoginRequestDTO dto) {
+    // user 정보 요청
+    OauthUserInfoVO oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
+
+    if (oauthUserInfoVO == null) {
+      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
+    }
+
+    // 가입 여부 확인
+    User user = userRepository.findByOauthId(oauthUserInfoVO.getId()).orElse(null);
+
+    // PRE_USER 신규 등록
+    if (user == null) {
+      user = new User();
+      user.setEmail(oauthUserInfoVO.getEmail());
+      user.setOauthId(oauthUserInfoVO.getId());
+      user.setOauthProviderType(OauthProviderType.GOOGLE);
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
     }

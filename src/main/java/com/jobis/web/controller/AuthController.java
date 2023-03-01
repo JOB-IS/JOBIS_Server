@@ -23,10 +23,17 @@ public class AuthController {
 
   private final AuthService authService;
 
-  @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<TokenResponseDTO> oauthLogin(
+  @PostMapping(value = "/login/oauth/kakao", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<TokenResponseDTO> kakaoOauthLogin(
       @Valid @RequestBody OauthLoginRequestDTO dto) {
-    TokenResponseDTO responseDTO = authService.oauthLogin(dto);
+    TokenResponseDTO responseDTO = authService.kakaoOauthLogin(dto);
+    return ResponseEntity.ok(responseDTO);
+  }
+
+  @PostMapping(value = "/login/oauth/google", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<TokenResponseDTO> googleOauthLogin(
+      @Valid @RequestBody OauthLoginRequestDTO dto) {
+    TokenResponseDTO responseDTO = authService.googleOauthLogin(dto);
     return ResponseEntity.ok(responseDTO);
   }
 
