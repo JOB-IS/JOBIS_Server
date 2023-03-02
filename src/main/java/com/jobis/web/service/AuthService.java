@@ -15,7 +15,7 @@ import com.jobis.web.dto.request.OauthLoginRequestDTO;
 import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
-import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
+import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -69,20 +69,16 @@ public class AuthService {
   @Transactional
   public TokenResponseDTO googleOauthLogin(OauthLoginRequestDTO dto) {
     // user 정보 요청
-    OauthUserInfoVO oauthUserInfoVO = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
-
-    if (oauthUserInfoVO == null) {
-      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
-    }
+    GoogleUserInfoVO googleUserInfoVO = oauthHelper.getUserInfoFromGoogle(dto.getAccessToken());
 
     // 가입 여부 확인
-    User user = userRepository.findByOauthId(oauthUserInfoVO.getId()).orElse(null);
+    User user = userRepository.findByOauthId(googleUserInfoVO.getId()).orElse(null);
 
     // PRE_USER 신규 등록
     if (user == null) {
       user = new User();
-      user.setEmail(oauthUserInfoVO.getEmail());
-      user.setOauthId(oauthUserInfoVO.getId());
+      user.setEmail(googleUserInfoVO.getEmail());
+      user.setOauthId(googleUserInfoVO.getId());
       user.setOauthProviderType(OauthProviderType.GOOGLE);
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);

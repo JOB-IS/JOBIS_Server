@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.jobis.exception.AuthenticationException;
 import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
-import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
+import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -29,44 +29,13 @@ public class OauthHelper {
   public OauthUserInfoVO getUserInfoFromGoogle(String accessToken) {
     try {
       // TODO RestTemplate Util Class?
-      ResponseEntity<OauthUserInfoVO> apiResponseJson = restTemplate.getForEntity(
+      ResponseEntity<GoogleUserInfoVO> apiResponseJson = restTemplate.getForEntity(
           GOOGLE_URL_FOR_USER_INFO + "?access_token=" + accessToken,
-          OauthUserInfoVO.class);
+          GoogleUserInfoVO.class);
       return apiResponseJson.getBody();
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
-      return null;
-    }
-  }
-
-  public OauthUserInfoVO getUserInfoFromKakao(String accessToken) {
-    try {
-      HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-      headers.set("Authorization", "Bearer " + accessToken);
-
-      HttpEntity entity = new HttpEntity<>(headers);
-
-      ResponseEntity<String> response = restTemplate.postForEntity(
-          KAKAO_URL_FOR_USER_INFO, entity, String.class);
-
-      // Json Parsing
-      JsonElement element = JsonParser.parseString(response.getBody());
-
-      String uid = element.getAsJsonObject().get("id").getAsString();
-      boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-      if (!hasEmail) {
-        throw new AuthenticationException(AuthenticationExceptionCode.EMAIL_NOT_FOUND);
-      }
-      String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-
-      OauthUserInfoVO vo = new OauthUserInfoVO();
-      vo.setEmail(email);
-      vo.setId(uid);
-      return vo;
-    } catch (HttpClientErrorException e) {
-      e.printStackTrace();
-      return null;
+      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
     }
   }
 
