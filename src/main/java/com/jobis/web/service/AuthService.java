@@ -59,7 +59,7 @@ public class AuthService {
 
     // 로그인 처리
     Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getId(),
             passwordEncoder.encode(user.getOauthId())));
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -90,7 +90,7 @@ public class AuthService {
 
     // 로그인 처리
     Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getId(),
             passwordEncoder.encode(user.getOauthId())));
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -114,7 +114,7 @@ public class AuthService {
 
     // 로그인 처리
     Authentication authentication = authenticationManagerBuilder.getObject()
-        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getId(),
             passwordEncoder.encode(user.getOauthId())));
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
