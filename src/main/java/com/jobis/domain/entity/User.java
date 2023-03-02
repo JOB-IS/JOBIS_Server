@@ -29,7 +29,7 @@ public class User extends BaseTime {
   @Column(name = "user_id")
   private Long id;
 
-  @Column(name = "email", nullable = false)
+  @Column(name = "email")
   private String email;
 
   @Column(name = "oauth_id", nullable = false, unique = true)

@@ -1,15 +1,14 @@
 package com.jobis.web.helper.oauth;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.jobis.exception.AuthenticationException;
 import com.jobis.exception.AuthenticationException.AuthenticationExceptionCode;
-import com.jobis.web.helper.oauth.dto.OauthUserInfoVO;
+import com.jobis.web.helper.oauth.dto.KakaoUserInfoVO;
+import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,47 +25,32 @@ public class OauthHelper {
 
   private final RestTemplate restTemplate;
 
-  public OauthUserInfoVO getUserInfoFromGoogle(String accessToken) {
+  public KakaoUserInfoVO getUserInfoFromKakao(String accessToken) {
     try {
-      // TODO RestTemplate Util Class?
-      ResponseEntity<OauthUserInfoVO> apiResponseJson = restTemplate.getForEntity(
-          GOOGLE_URL_FOR_USER_INFO + "?access_token=" + accessToken,
-          OauthUserInfoVO.class);
-      return apiResponseJson.getBody();
+      HttpHeaders headers = new HttpHeaders();
+      headers.add("Authorization", "Bearer " + accessToken);
+      headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+      HttpEntity<String> request = new HttpEntity<String>(headers);
+      ResponseEntity<KakaoUserInfoVO> response = restTemplate.exchange(KAKAO_URL_FOR_USER_INFO,
+          HttpMethod.GET, request, KakaoUserInfoVO.class);
+      return response.getBody();
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
-      return null;
+      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
     }
   }
 
-  public OauthUserInfoVO getUserInfoFromKakao(String accessToken) {
+  public GoogleUserInfoVO getUserInfoFromGoogle(String accessToken) {
     try {
-      HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-      headers.set("Authorization", "Bearer " + accessToken);
-
-      HttpEntity entity = new HttpEntity<>(headers);
-
-      ResponseEntity<String> response = restTemplate.postForEntity(
-          KAKAO_URL_FOR_USER_INFO, entity, String.class);
-
-      // Json Parsing
-      JsonElement element = JsonParser.parseString(response.getBody());
-
-      String uid = element.getAsJsonObject().get("id").getAsString();
-      boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-      if (!hasEmail) {
-        throw new AuthenticationException(AuthenticationExceptionCode.EMAIL_NOT_FOUND);
-      }
-      String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-
-      OauthUserInfoVO vo = new OauthUserInfoVO();
-      vo.setEmail(email);
-      vo.setId(uid);
-      return vo;
+      // TODO RestTemplate Util Class?
+      ResponseEntity<GoogleUserInfoVO> apiResponseJson = restTemplate.getForEntity(
+          GOOGLE_URL_FOR_USER_INFO + "?access_token=" + accessToken,
+          GoogleUserInfoVO.class);
+      return apiResponseJson.getBody();
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
-      return null;
+      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
     }
   }
 
