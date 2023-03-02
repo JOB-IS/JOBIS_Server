@@ -15,6 +15,7 @@ import com.jobis.web.dto.request.OauthLoginRequestDTO;
 import com.jobis.web.dto.request.ReIssueRequestDTO;
 import com.jobis.web.dto.response.TokenResponseDTO;
 import com.jobis.web.helper.oauth.OauthHelper;
+import com.jobis.web.helper.oauth.dto.KakaoUserInfoVO;
 import com.jobis.web.helper.oauth.dto.GoogleUserInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,20 +39,16 @@ public class AuthService {
   @Transactional
   public TokenResponseDTO kakaoOauthLogin(OauthLoginRequestDTO dto) {
     // user 정보 요청
-    OauthUserInfoVO oauthUserInfoVO = oauthHelper.getUserInfoFromKakao(dto.getAccessToken());
-
-    if (oauthUserInfoVO == null) {
-      throw new AuthenticationException(AuthenticationExceptionCode.INVALID_OAUTH_TOKEN);
-    }
+    KakaoUserInfoVO kakaoUserInfoVO = oauthHelper.getUserInfoFromKakao(dto.getAccessToken());
 
     // 가입 여부 확인
-    User user = userRepository.findByOauthId(oauthUserInfoVO.getId()).orElse(null);
+    User user = userRepository.findByOauthId(kakaoUserInfoVO.getId().toString()).orElse(null);
 
     // PRE_USER 신규 등록
     if (user == null) {
       user = new User();
-      user.setEmail(oauthUserInfoVO.getEmail());
-      user.setOauthId(oauthUserInfoVO.getId());
+      user.setEmail(kakaoUserInfoVO.getKakao_account().getEmail());
+      user.setOauthId(kakaoUserInfoVO.getId().toString());
       user.setOauthProviderType(OauthProviderType.KAKAO);
       user.setAuthType(AuthType.ROLE_PRE_USER);
       userRepository.save(user);
