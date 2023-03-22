@@ -45,6 +45,7 @@ public class RecruitmentRepositoryImpl extends QuerydslRepositorySupport impleme
             recruitment.companyName,
             recruitment.position,
             recruitment.link,
+            recruitment.color,
             recruitment.recruitmentStatus,
             recruitment.workType
         ))
