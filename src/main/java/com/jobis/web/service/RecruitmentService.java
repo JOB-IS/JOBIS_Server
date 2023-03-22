@@ -54,6 +54,7 @@ public class RecruitmentService {
     recruitment.setCompanyName(dto.getCompanyName());
     recruitment.setPosition(dto.getPosition());
     recruitment.setLink(dto.getLink());
+    recruitment.setColor(dto.getColor());
     recruitment.setRecruitmentStatus(dto.getRecruitmentStatus());
     recruitment.setWorkType(dto.getWorkType());
     recruitment.setUser(user);
@@ -108,6 +109,9 @@ public class RecruitmentService {
     }
     if (StringUtils.hasText(dto.getLink())) {
       recruitment.setLink(dto.getLink());
+    }
+    if (StringUtils.hasText(dto.getColor())) {
+      recruitment.setColor(dto.getColor());
     }
     if (dto.getRecruitmentStatus() != null) {
       recruitment.setRecruitmentStatus(dto.getRecruitmentStatus());
