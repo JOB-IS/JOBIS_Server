@@ -31,6 +31,7 @@ public class Recruitment extends BaseTime {
   private String companyName;
   private String position;
   private String link;
+  private String color;
   @Enumerated(EnumType.STRING)
   @Column(name = "recruitment_status", nullable = false)
   private RecruitmentStatus recruitmentStatus;

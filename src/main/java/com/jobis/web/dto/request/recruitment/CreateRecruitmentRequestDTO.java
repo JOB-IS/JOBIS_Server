@@ -19,6 +19,7 @@ public class CreateRecruitmentRequestDTO {
   private String companyName;
   private String position;
   private String link;
+  private String color;
   @NotNull
   private RecruitmentStatus recruitmentStatus;
   private WorkType workType;

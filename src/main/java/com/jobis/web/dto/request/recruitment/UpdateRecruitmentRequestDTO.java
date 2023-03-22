@@ -14,6 +14,7 @@ public class UpdateRecruitmentRequestDTO {
   private String body;
   private String position;
   private String link;
+  private String color;
   private RecruitmentStatus recruitmentStatus;
   private WorkType workType;
 
